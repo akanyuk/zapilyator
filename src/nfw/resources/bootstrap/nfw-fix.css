@@ -1,0 +1,10 @@
+TABLE.table TD.nowrap, TABLE.table TH { white-space: nowrap; }
+TABLE.table TD.icon-column, TABLE.table  TH.icon-column { width: 16px; padding-right: 0; padding-left: 0; text-align: center; }
+TABLE.table TD.full { width: 100%; }
+TABLE.table TD.strong { font-weight: bold; }
+TABLE.table TD.right, TABLE.table TH.right { text-align: right; }
+TABLE.table TD.center, TABLE.table TH.center { text-align: center; }
+
+.alert-cond { padding: 10px; }
+.alert-cond P { font-size: 13px; line-height: 15px; }
+.alert-cond.alert-dismissable .close, .alert-cond.alert-dismissible .close { top: -8px; right: -4px; }

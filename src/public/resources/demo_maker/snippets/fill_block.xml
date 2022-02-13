@@ -1,0 +1,27 @@
+<snippet>
+	<name>Fill block</name>
+	<description>Fill block with byte</description>
+	<template><![CDATA[	
+
+	ld hl,%FROM% : ld d,h, e,l : inc de : ld bc,%LENGTH% - 1, (hl),%FILL% : ldir
+		
+	]]></template>
+	<length>13</length>
+	<params>
+		<param>
+			<varname>FROM</varname>
+			<type>word</type>
+			<default>0</default>
+		</param>
+		<param>
+			<varname>LENGTH</varname>
+			<type>word</type>
+			<default>0</default>
+		</param>
+		<param>
+			<varname>FILL</varname>
+			<type>byte</type>
+			<default>0</default>
+		</param>
+	</params>
+</snippet>

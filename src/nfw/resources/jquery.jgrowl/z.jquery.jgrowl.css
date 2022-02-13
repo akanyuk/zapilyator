@@ -1,0 +1,4 @@
+.jGrowl.top-right {	top: 20px !important; }
+.jGrowl-notification { background-color: #074A07; min-height: 0; margin: 8px 10px 0 10px; padding: 5px 10px; background-image: none; border: 1px solid #030E03; color: #ffffff; }
+.jGrowl-notification.error { background-color: #6A0707; }
+.jGrowl-close { position: relative; top: -5px; left: 2px; }    

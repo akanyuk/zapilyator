@@ -1,0 +1,15 @@
+@media (max-width: 768px) {
+	.breadcrumb-status-xs { margin-bottom: 10px; }
+	.breadcrumb { white-space: nowrap; overflow: scroll; }
+}
+
+@media (min-width: 769px) {
+	.breadcrumb-status-xs { display: none; }
+}
+
+.settings {	display: table;	}
+.settings .record, .settings .header, .settings .footer { display:table-row; }
+.settings .record:nth-child(even) { background-color: #E2E4FF; }
+.settings .cell { display: table-cell; padding: 5px 2px; vertical-align: middle; }
+.settings .header .cell, .settings .footer .cell { font-size: 90%; font-weight: bold; }
+.settings .icon { cursor: default; }

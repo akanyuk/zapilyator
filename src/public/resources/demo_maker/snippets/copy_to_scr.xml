@@ -1,0 +1,13 @@
+<snippet>
+	<name>Copy to scr</name>
+	<description>Copy memory block to screen</description>
+	<template><![CDATA[	ld hl,%SOURCE%, de,#4000, bc,#1b00 : ldir]]></template>
+	<length>10</length>
+	<params>
+		<param>
+			<varname>SOURCE</varname>
+			<type>word</type>
+			<default>#c000</default>
+		</param>
+	</params>
+</snippet>

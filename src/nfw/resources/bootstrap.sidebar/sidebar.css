@@ -1,0 +1,220 @@
+/* All the default sidebar styles */
+/* toggle button settings */
+/* Note: this disables the navbar-toggle class's hide function. set visibility with the boostrap visible/hidden classes */
+/* Note: this also disables the navbar-header class positioning settings in small screens. */
+.navbar.navbar-static .navbar-header {
+    float: left;
+}
+
+.navbar .navbar-toggle.toggle-left {
+    float: left;
+    margin-left: 15px;
+}
+
+.navbar .navbar-toggle.toggle-right {
+    float: right;
+    margin-right: 15px;
+}
+
+.navbar .navbar-toggle.toggle-sidebar, [data-toggle="sidebar"] {
+    display: block;
+}
+
+/* sidebar settings */
+.sidebar {
+	padding: 0 !important;
+    position: fixed;
+    display: block;
+    top: 51px;
+    bottom: 0;
+    z-index: 1000;
+    min-height: 100%;
+    max-height: none;
+    overflow: auto;
+ 	background-color: #333;
+}
+
+.sidebar-white {
+	background-color: #fff !important;
+	border-right: none !important;
+	border-left: none !important;
+}
+
+.sidebar-left {
+    left: 0;
+    border-right: 1px solid #777;
+}
+
+.sidebar-right {
+    right: 0;
+    border-left: 1px solid #777;
+}
+
+.sidebar a { color: #aaa; }
+.sidebar a:hover, .sidebar a:focus, .sidebar a:active { color: #fff; }
+
+.sidebar-white a { color: #337ab7; }
+.sidebar-white  a:hover, .sidebar-white  a:focus, .sidebar-white  a:active { color: #23527c; }
+
+/* css to override hiding the sidebar according to different screen sizes */
+.row .sidebar.sidebar-left.sidebar-xs-show {
+    left: 0;
+    -webkit-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    -o-transform: translate(0,0);
+    -moz-transform: translate(0,0);
+    transform: translate(0,0);
+}
+
+/*right sidebar is untested */
+.row .sidebar.sidebar-right.sidebar-xs-show {
+    right: 0;
+    -webkit-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    -o-transform: translate(0,0);
+    -moz-transform: translate(0,0);
+    transform: translate(0,0);
+}
+
+@media (min-width: 768px) {
+    .row .sidebar.sidebar-left.sidebar-sm-show {
+        left: 0;
+        -webkit-transform: translate(0,0);
+        -ms-transform: translate(0,0);
+        -o-transform: translate(0,0);
+        -moz-transform: translate(0,0);
+        transform: translate(0,0);
+    }
+
+	   /*right sidebar is untested */
+	   .row .sidebar.sidebar-right.sidebar-sm-show {
+	       right: 0;
+	       -webkit-transform: translate(0,0);
+	       -ms-transform: translate(0,0);
+	       -o-transform: translate(0,0);
+	       -moz-transform: translate(0,0);
+	       transform: translate(0,0);
+	   }
+}
+
+@media (min-width: 992px) {
+    .row .sidebar.sidebar-left.sidebar-md-show {
+        left: 0;
+        -webkit-transform: translate(0,0);
+        -ms-transform: translate(0,0);
+        -o-transform: translate(0,0);
+        -moz-transform: translate(0,0);
+        transform: translate(0,0);
+    }
+
+    .row .sidebar.sidebar-right.sidebar-md-show {
+        right: 0;
+        -webkit-transform: translate(0,0);
+        -ms-transform: translate(0,0);
+        -o-transform: translate(0,0);
+        -moz-transform: translate(0,0);
+        transform: translate(0,0);
+    }
+}
+
+@media (min-width: 1200px) {
+    .row .sidebar.sidebar-left.sidebar-lg-show {
+        left: 0;
+        -webkit-transform: translate(0,0);
+        -moz-transform: translate(0,0);
+        -ms-transform: translate(0,0);
+        -o-transform: translate(0,0);
+        transform: translate(0,0);
+    }
+
+    .row .sidebar.sidebar-right.sidebar-lg-show {
+        right: 0;
+        -webkit-transform: translate(0,0);
+        -moz-transform: translate(0,0);
+        -ms-transform: translate(0,0);
+        -o-transform: translate(0,0);
+        transform: translate(0,0);
+    }
+}
+
+/* animation class - optional: without it the sidebar would just pop in and out*/
+.sidebar-animate {
+    -webkit-transition: -webkit-transform 300ms ease;
+    -moz-transition: -moz-transform 300ms ease;
+    -o-transition: transform 300ms ease;
+    transition: transform 300ms ease;
+}
+
+/* Left panel positioning classes */
+.sidebar.sidebar-left {
+    -webkit-transform: translate(-100%,0);
+    -moz-transform: translate(-100%,0);
+    -ms-transform: translate(-100%,0);
+    -o-transform: translate(-100%,0);
+    transform: translate(-100%,0);
+}
+
+.sidebar.sidebar-left.sidebar-open {
+    -webkit-transform: translate(0,0);
+    -moz-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    -o-transform: translate(0,0);
+    transform: translate(0,0);
+}
+
+.sidebar.sidebar-right {
+    -webkit-transform: translate(100%,0);
+    -moz-transform: translate(100%,0);
+    -ms-transform: translate(100%,0);
+    -o-transform: translate(100%,0);
+    transform: translate(100%,0);
+}
+
+.sidebar.sidebar-right.sidebar-open {
+    -webkit-transform: translate(0,0);
+    -moz-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    -o-transform: translate(0,0);
+    transform: translate(0,0);
+}
+
+
+
+/* Metis menu related */
+.sidebar-nav {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  background-image: -webkit-linear-gradient(left, color-stop(#333333 10px), color-stop(#222222 10px));
+  background-image: linear-gradient(to right, #333333 10px, #222222 10px);
+  background-repeat: repeat-x;
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff333333', endColorstr='#ff222222', GradientType=1);
+  margin-bottom: 70px;
+}
+.sidebar-nav ul { padding: 0; margin: 0; list-style: none; }
+.sidebar-nav a, .sidebar-nav a:hover, .sidebar-nav a:focus, .sidebar-nav a:active { outline: none; }
+.sidebar-nav ul li, .sidebar-nav ul a { display: block; }
+.sidebar-nav ul a {
+  padding: 10px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05) inset;
+  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+}
+.sidebar-nav ul a:hover, .sidebar-nav ul a:focus, .sidebar-nav ul a:active { text-decoration: none; }
+.sidebar-nav-item { padding-left: 5px; }
+.sidebar-nav-item-icon { width: 16px; display: inline-block; text-align: center; }
+
+#rtlh3 small { transform: rotateY(180deg); display: inline-block; }
+
+/* submenus */
+.sidebar-nav ul ul a, .sidebar-nav ul ul ul a, .sidebar-nav ul ul ul ul a {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.sidebar-nav ul ul a:hover, .sidebar-nav ul ul a:focus, .sidebar-nav ul ul a:active,
+.sidebar-nav ul ul ul a:hover, .sidebar-nav ul ul ul a:focus, .sidebar-nav ul ul ul a:active,
+.sidebar-nav ul ul ul ul a:hover, .sidebar-nav ul ul ul ul a:focus, .sidebar-nav ul ul ul ul a:active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav ul ul a { padding: 10px 20px 10px 30px; }
+.sidebar-nav ul ul ul a {  padding: 10px 20px 10px 50px; }
+.sidebar-nav ul ul ul ul a {  padding: 10px 20px 10px 70px; }
+

@@ -1,0 +1,13 @@
+<snippet>
+	<name>Clear screen</name>
+	<description>Set border</description>
+	<template><![CDATA[	ld hl,#4000, de,#4001, bc,#1800, (hl), l : ldir : ld bc,#02ff, (hl),%ATTR% : ldir]]></template>
+	<length>17</length>
+	<params>
+		<param>
+			<varname>ATTR</varname>
+			<type>byte</type>
+			<default>0</default>
+		</param>
+	</params>
+</snippet>
