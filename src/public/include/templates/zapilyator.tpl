@@ -6,27 +6,6 @@
 		array('value' => 1, 'desc' => '1 - fastest'),
 		2,3,4,5,6,7,8,9,10,12,15,20,30,40,50,75,100,125,150,200,255
 	);
-	
-	$button_labels = array(
-		'Hype or die!',
-		'Hype or die!',
-		'Hype or die!',
-		'Hype or die!',
-		'Hype or die!',
-		'Hype or die!',
-		'Make demo not war',
-		'Make demo not war',
-		'Make demo not war',
-		'Please sit back and relax!',
-		'Please sit back and relax!',
-		'Please sit back and relax!',
-		'Zapili mne pobyromu!',
-		'Zapili mne pobyromu!',
-		'I accept the the license agreement',
-		'Are you ready?',
-		'PILI@DOMINATE!'
-	);
-	$button_label = $button_labels[rand(0, count($button_labels) - 1)];
 ?>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -389,13 +368,13 @@ $(document).ready(function() {
 			<label class="col-md-3 control-label">Scroll font</label>
 			<div class="col-md-9">
 				<label class="radio-inline">
-					<input type="radio" checked name="scroll_font" value="1"/><img src="<?php echo NFW::i()->base_path?>resources/demo_maker/font1.png" />
+					<input type="radio" checked name="scroll_font" value="1"/><img src="<?php echo NFW::i()->base_path?>resources/zapilyator/font1.png" />
 				</label>
 				<label class="radio-inline">
-					<input type="radio" name="scroll_font" value="2"/><img src="<?php echo NFW::i()->base_path?>resources/demo_maker/font2.png" />
+					<input type="radio" name="scroll_font" value="2"/><img src="<?php echo NFW::i()->base_path?>resources/zapilyator/font2.png" />
 				</label>
 				<label class="radio-inline">
-					<input type="radio" name="scroll_font" value="3"/><img src="<?php echo NFW::i()->base_path?>resources/demo_maker/font3.png" />
+					<input type="radio" name="scroll_font" value="3"/><img src="<?php echo NFW::i()->base_path?>resources/zapilyator/font3.png" />
 				</label>
 			</div>
 		</div>
@@ -472,7 +451,7 @@ $(document).ready(function() {
 		
 		<div class="form-group">
 			<div class="col-md-offset-3 col-md-9">
-				<button id="m-d-n-w" type="submit" class="btn btn-primary btn-lg"><?php echo $button_label?></button>
+				<button id="m-d-n-w" type="submit" class="btn btn-primary btn-lg">Create</button>
 			</div>
 		</div>
 	</fieldset>

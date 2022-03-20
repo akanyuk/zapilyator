@@ -1,6 +1,6 @@
 	; build
 	if (_ERRORS == 0 && _WARNINGS == 0)
-	;LABELSLIST "user.l"
+	LABELSLIST "user.l"
 	savesna SNA_FILENAME, page0s
 
 	page 0

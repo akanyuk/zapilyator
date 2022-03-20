@@ -1,11 +1,6 @@
 <?php
-/***********************************************************************
-  Copyright (C) 2013-2014 Andrew nyuk Marinov (aka.nyuk@gmail.com)
-  $Id$  
 
- ************************************************************************/
-
-class zapilyator_te extends base_module {
+class zapilyator extends base_module {
 	private $space = array(
 		0 => 40873,
 		1 => 16384,
@@ -16,7 +11,7 @@ class zapilyator_te extends base_module {
 	); 
 	
 	private $sizes = array(
-		'Int flow' => 345,
+		'Int flow' => 346,
 			
 		/* Player length:
 		 * 2840 - player
@@ -32,11 +27,11 @@ class zapilyator_te extends base_module {
 	var $is_overflow = false;
 	
 	// Uploading related
-	private $uploads_timelive = 864000;
 	private $cache_dir = 'var/cache/';
 	var $last_uploaded = false;
 	
 	function __construct() {
+	    parent::__construct();
 		$this->cache_dir = PROJECT_ROOT.$this->cache_dir;
 	}
 	
@@ -86,7 +81,7 @@ class zapilyator_te extends base_module {
 	}
 	
 	private function getSnippet($snippet_name, $options = array()) {
-		if (!$xml = simplexml_load_file(PROJECT_ROOT.'resources/demo_maker/snippets/'.$snippet_name.'.xml')) {
+		if (!$xml = simplexml_load_file(PROJECT_ROOT.'resources/zapilyator/snippets/'.$snippet_name.'.xml')) {
 			$this->error('Wrong XML file.', __FILE__, __LINE__);
 			return false;
 		}
@@ -231,7 +226,6 @@ class zapilyator_te extends base_module {
 	function parseAnimation($data, $i, $method = ZXAnimation::METHOD_FAST) {
 		// Parse GIF portion
 		$parser = new parse256x192(array('initialColor' => $data['main']['color'], 'sourceType' => $data[$i]['source_type'], 'defaultDuration' => $data[$i]['speed']));
-		$count = 1;
 		if (!$loading_result = $parser->load($data[$i]['source'], array(
 				'from' => isset($data['from']) ? $data['from'] : 0,
 				'count' => 100,
@@ -330,25 +324,20 @@ class zapilyator_te extends base_module {
 		// Generate ZIP
 		$dest_filename = md5(serialize($params));
 		$zip = new ZipArchive();
-		$result = $zip->open($this->cache_dir.$dest_filename, ZIPARCHIVE::OVERWRITE | ZIPARCHIVE::CREATE);
-		
-		$zip->addFile(PROJECT_ROOT.'resources/demo_maker/bin/sjasmplus.exe', 'bin/sjasmplus.exe');
-		$zip->addFile(PROJECT_ROOT.'resources/demo_maker/bin/unreal/unreal.exe', 'bin/unreal/unreal.exe');
-		$zip->addFile(PROJECT_ROOT.'resources/demo_maker/bin/unreal/slipka.rom', 'bin/unreal/slipka.rom');
-		$zip->addFile(PROJECT_ROOT.'resources/demo_maker/bin/unreal/unreal.ini', 'bin/unreal/unreal.ini');
-		$zip->addFile(PROJECT_ROOT.'resources/demo_maker/make.cmd', 'make.cmd');
-		$zip->addFile(PROJECT_ROOT.'resources/demo_maker/sources/builder.asm', 'sources/builder.asm');
+		$zip->open($this->cache_dir.$dest_filename, ZIPARCHIVE::OVERWRITE | ZIPARCHIVE::CREATE);
+		$zip->addFile(PROJECT_ROOT.'resources/zapilyator/make.cmd', 'make.cmd');
+		$zip->addFile(PROJECT_ROOT.'resources/zapilyator/sources/builder.asm', 'sources/builder.asm');
 		
 		// -----------------
 		//  Generate source
 		// -----------------
 		
-		$fp = fopen(PROJECT_ROOT.'resources/demo_maker/sources/test.asm.tpl', 'r');
-		$source_tpl = fread($fp, filesize(PROJECT_ROOT.'resources/demo_maker/sources/test.asm.tpl'));
+		$fp = fopen(PROJECT_ROOT.'resources/zapilyator/sources/test.asm.tpl', 'r');
+		$source_tpl = fread($fp, filesize(PROJECT_ROOT.'resources/zapilyator/sources/test.asm.tpl'));
 		fclose($fp);
 		
 		$data_flow = $main_flow = $timeline = array();
-		$is_music = isset($params['music_file']) ? true : false;
+		$is_music = isset($params['music_file']);
 		
 		// Generate empty $data_flow array
 		foreach($this->space as $page=>$foo) $data_flow[$page] = array();
@@ -358,7 +347,7 @@ class zapilyator_te extends base_module {
 			$source_tpl = str_replace('%if_music%', '', $source_tpl);
 			
 			$this->allocSpace($this->sizes['PT3 player'] + filesize($params['music_file']), 0);
-			$zip->addFile(PROJECT_ROOT.'resources/demo_maker/sources/PTxPlay.asm', 'sources/PTxPlay.asm');
+			$zip->addFile(PROJECT_ROOT.'resources/zapilyator/sources/PTxPlay.asm', 'sources/PTxPlay.asm');
 			$zip->addFile($params['music_file'], 'res/music');
 		}
 		else 
@@ -403,7 +392,7 @@ class zapilyator_te extends base_module {
 			$this->allocSpace($snippet['length'], 0);
 		}
 
-		// Analyzator in splash screen
+		// Analyzer in splash screen
 		if (isset($params['splash']['analyzator']['chanel']) && isset($params['splash']['background']) && $data = $this->generateAnalyzatorData($params['splash']['background'])) {
 			$snippet = $this->getSnippet('analyzator_bright', array(
 				'module' => 'splash_analyzator',
@@ -455,7 +444,7 @@ class zapilyator_te extends base_module {
 			$this->allocSpace($snippet['length'], 0);
 		}
 		
-		// Analyzator in main screen
+		// Analyzer in main screen
 		if (isset($params['main']['analyzator']['chanel']) && isset($params['main']['background']) && $data = $this->generateAnalyzatorData($params['main']['background'])) {
 			$snippet = $this->getSnippet('analyzator_bright', array(
 				'module' => 'main_analyzator',
@@ -538,12 +527,12 @@ class zapilyator_te extends base_module {
 				'next_run' => 0xff
 			);
 			
-			$zip->addFile(PROJECT_ROOT.'resources/demo_maker/res/'.$params['scroll']['font'], 'res/16x16font');
+			$zip->addFile(PROJECT_ROOT.'resources/zapilyator/res/'.$params['scroll']['font'], 'res/16x16font');
 			$zip->addFromString('res/scroll', iconv("UTF-8", 'cp1251', mb_strtoupper($params['scroll']['text'], "UTF-8")));
 		}
 				
-		// Generate three animations
-		for ($i = 1; $i <= 3; $i++) {
+		// Generate animations
+		for ($i = 1; $i <= 4; $i++) {
 			if (!$params[$i]) continue;
 			
 			// Alloc memory for animation
@@ -615,7 +604,7 @@ class zapilyator_te extends base_module {
 		}
 		
 		
-		// Almost fone. Finalize.
+		// Almost done. Finalize.
 		
 		if (empty($timeline)) {
 			$source_tpl = str_replace('%timeline%', '', $source_tpl);

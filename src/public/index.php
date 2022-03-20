@@ -3,7 +3,7 @@
 #define ('NFW_DEBUG', '1');
 #define ('NFW_LOG_GENERATED_TIME', '1');
 #define ('NFW_LOG_QUERIES', '1');
-#define ('NFW_SEPARATED_RESOURCES', '1');
+define ('NFW_SEPARATED_RESOURCES', '1');
 
 // NFW initialization and run
 define('PROJECT_ROOT', dirname(__FILE__).'/');

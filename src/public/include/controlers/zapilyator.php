@@ -17,9 +17,9 @@ if (isset($_GET['get_file'])) {
 elseif (empty($_POST)) {
 	// Main page
 	NFW::i()->assign('page', array(
-		'path' => 'zapilyator_te',
-		'title' => 'Zapilyator TE',
-		'content' => NFW::i()->fetch(PROJECT_ROOT.'include/templates/zapilyator/zapilyator_te.tpl')
+		'path' => 'zapilyator',
+		'title' => 'Zapilyator',
+		'content' => NFW::i()->fetch(PROJECT_ROOT.'include/templates/zapilyator.tpl')
 	));
 	NFW::i()->display('main.tpl');
 }
@@ -33,7 +33,7 @@ ini_set('max_execution_time', 300);
 require_once PROJECT_ROOT.'include/helpers/parse256x192.php';
 require_once PROJECT_ROOT.'include/helpers/ZXAnimation.php';
 
-$DemoMaker = new zapilyator_te();
+$Zapilyator = new zapilyator();
 
 // First stage - load data
 if (!isset($_POST['stage'])) {
@@ -51,11 +51,11 @@ if (!isset($_POST['stage'])) {
 		'3' => false,
 	);
 	
-	// Load three animations
-	for ($i = 1; $i <= 3; $i++) {
-		if (!$animation = $DemoMaker->upload('animation'.$i)) continue;
+	// Load animations
+	for ($i = 1; $i <= 4; $i++) {
+		if (!$animation = $Zapilyator->upload('animation'.$i)) continue;
 		
-		switch($DemoMaker->last_uploaded['extension']) {
+		switch($Zapilyator->last_uploaded['extension']) {
 			case 'gif':
 				$source_type = 'gif';
 				break;
@@ -77,29 +77,28 @@ if (!isset($_POST['stage'])) {
 			'totalBytesAff' => 0,
 			'is_done' => false			
 		);		
-		
 	}
 	
 
 	if (isset($_FILES['music_file'])) {
-		$music_file = $DemoMaker->upload('music_file');
-		if (!$DemoMaker->error) {
+		$music_file = $Zapilyator->upload('music_file');
+		if (!$Zapilyator->error) {
 			$data['music_file'] = $music_file;
 		}
 	}
 
 	
 	// Splash screen
-	$splash_background = $DemoMaker->upload('splash_background');
-	if (!$DemoMaker->error) {
+	$splash_background = $Zapilyator->upload('splash_background');
+	if (!$Zapilyator->error) {
 		$data['splash']['background'] = $splash_background;
 		$data['splash']['delay'] = intval($_POST['splash_delay']) < 1 || intval($_POST['splash_delay']) > 5 ? 1 : intval($_POST['splash_delay']);
 	}
 	
 	
 	// Main background
-	$main_background = $DemoMaker->upload('main_background');
-	if (!$DemoMaker->error) {
+	$main_background = $Zapilyator->upload('main_background');
+	if (!$Zapilyator->error) {
 		$data['main']['background'] = $main_background;
 	}
 	
@@ -132,7 +131,7 @@ if (!isset($_POST['stage'])) {
 	// Upload pone!
 	
 	$project_name = md5(NFW::i()->serializeArray($data));
-	$DemoMaker->saveProject($project_name, $data);
+	$Zapilyator->saveProject($project_name, $data);
 
 	NFW::i()->renderJSON(array(
 		'result' => 'success',
@@ -148,23 +147,23 @@ if (!isset($_POST['stage'])) {
 
 if ($_POST['stage'] == 'parse_animation') {
 	$project_name = isset($_POST['project_name']) ? $_POST['project_name'] : false;
-	if (!$data = $DemoMaker->loadProject($_POST['project_name'])) {
-		NFW::i()->renderJSON(array('result' => 'error', 'last_msg' => $DemoMaker->last_msg));
+	if (!$data = $Zapilyator->loadProject($_POST['project_name'])) {
+		NFW::i()->renderJSON(array('result' => 'error', 'last_msg' => $Zapilyator->last_msg));
 	}
 	
-	for ($i = 1; $i <= 3; $i++) {
+	for ($i = 1; $i <= 4; $i++) {
 		if (!$data[$i] || $data[$i]['is_done']) continue;
 
-		$method = $i==3 ? ZXAnimation::METHOD_FAST : ZXAnimation::METHOD_MEMSAVE;
-		$data[$i]['method'] = $i==3 ? 'fast' : 'memsave';
+		$method = $i>2 ? ZXAnimation::METHOD_FAST : ZXAnimation::METHOD_MEMSAVE;
+		$data[$i]['method'] = $i>2 ? 'fast' : 'memsave';
 		$data[$i]['position'] = $i==1 ? 'main_flow' : 'timeline';
 		
-		list($data, $loading_result) = $DemoMaker->parseAnimation($data, $i, $method);
+		list($data, $loading_result) = $Zapilyator->parseAnimation($data, $i, $method);
 		if ($loading_result['is_done']) {
 			// Next animation
 			$data['from'] = 0;
 			$data[$i]['is_done'] = true;
-			$DemoMaker->saveProject($project_name, $data);
+			$Zapilyator->saveProject($project_name, $data);
 			
 			$log = array(
 				'Parsed: <strong>'.$loading_result['from'].' - '.$loading_result['to'].'</strong> ('.$loading_result['total'].' total).',
@@ -174,7 +173,7 @@ if ($_POST['stage'] == 'parse_animation') {
 				'Data ratio: <strong>'.number_format($data[$i]['totalFramesLen'] / $data[$i]['totalBytesAff'], 2, '.', '').'</strong> bytes',
 				'---'
 			);
-			if ($i < 3) {
+			if ($i < 4) {
 				$log[] = 'Parsing animation '.($i+1).'...';
 			}
 			
@@ -187,7 +186,7 @@ if ($_POST['stage'] == 'parse_animation') {
 		}
 		else {
 			$data['from'] = $loading_result['to'] + 1;
-			$DemoMaker->saveProject($project_name, $data);
+			$Zapilyator->saveProject($project_name, $data);
 			NFW::i()->renderJSON(array(
 				'result' => 'success',
 				'stage' => 'parse_animation',
@@ -201,15 +200,15 @@ if ($_POST['stage'] == 'parse_animation') {
 	
 	// Parsed successfully - make sources
 	
-	$result_zip = $DemoMaker->generateDemo($data);
+	$result_zip = $Zapilyator->generateDemo($data);
 	
 	NFW::i()->renderJSON(array(
 		'result' => 'done',
 		'download' => '?get_file='.$result_zip,
 		'log' => array(
 			'Generating demo...',
-			$DemoMaker->is_overflow ? '' : 'Freespace: <strong>'.number_format($DemoMaker->getFreeSpace() / 1024, 2, '.', '').'</strong> kb (<strong>'.number_format($DemoMaker->getFreeSpace(), 0, '.', ' ').'</strong> bytes)',
-			$DemoMaker->is_overflow ? '<div class="error">RAM limit exceeded!</div>' :  '<div class="success">Success!</div>'
+			$Zapilyator->is_overflow ? '' : 'Freespace: <strong>'.number_format($Zapilyator->getFreeSpace() / 1024, 2, '.', '').'</strong> kb (<strong>'.number_format($Zapilyator->getFreeSpace(), 0, '.', ' ').'</strong> bytes)',
+			$Zapilyator->is_overflow ? '<div class="error">RAM limit exceeded!</div>' :  '<div class="success">Success!</div>'
 		)
 	));
 }

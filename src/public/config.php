@@ -1,6 +1,6 @@
 <?php
 return array (
-	'default_controler' => 'demo_maker',
+	'default_controler' => 'zapilyator',
 	'cookie' => array(
 		'name' => 'zapilyator',
 		'domain' => '.'.$_SERVER['HTTP_HOST'],
