@@ -1,0 +1,53 @@
+<snippet>
+	<name>Analyzer bright</name>
+	<description>AY-analyzer by bright attribute</description>
+	<template><![CDATA[
+	ld bc,#fffd : ld a, %CHANNEL% : out (c),a : in a,(c)
+CUR_AY	ld e,#00
+	cp e : jr nc, $+4
+	ld a,e : dec a
+	ld (CUR_AY + 1), a		
+	cp %SENS% : jr c, 1f
+		
+	; or #40
+	ld hl, danC
+	ld (hl), #F6
+	inc hl : ld (hl), #40
+	jr 2f
+		
+	; and #3f
+1	ld hl, danC
+	ld (hl), #E6
+	inc hl : ld (hl), #3f
+		
+2	ld ix, DATA
+dan	ld l, (ix + 0)
+	ld h, (ix + 1)
+	ld a, (hl) 
+danC	or #40 : ld (hl), a
+	inc ix : inc ix
+	ld a, (ix + 1) : or a : ret z
+	jr dan
+DATA	
+%DATA%
+	dw #0000
+	]]></template>
+	<length>68</length>
+	<params>
+		<param>
+			<varname>CHANNEL</varname>
+			<type>byte</type>
+			<default>#0a</default>
+		</param>
+		<param>
+			<varname>SENS</varname>
+			<type>byte</type>
+			<default>#0f</default>
+		</param>
+		<param>
+			<varname>DATA</varname>
+			<type>str</type>
+			<default/>
+		</param>
+	</params>
+</snippet>

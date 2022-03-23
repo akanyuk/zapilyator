@@ -1,0 +1,13 @@
+<snippet>
+	<name>Pause short</name>
+	<description>Wain N ints</description>
+	<template><![CDATA[	ld b, %DELAY% : halt : djnz $-1]]></template>
+	<length>5</length>
+	<params>
+		<param>
+			<varname>DELAY</varname>
+			<type>byte</type>
+			<default>1</default>
+		</param>
+	</params>
+</snippet>

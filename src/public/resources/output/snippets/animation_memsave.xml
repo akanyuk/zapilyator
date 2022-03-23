@@ -1,0 +1,67 @@
+<snippet>
+	<name>Animation memsave</name>
+	<description>Animation player with memory saving</description>
+	<template><![CDATA[
+
+anima	ld a, #01 : dec a : ld (anima + 1), a : ret nz	; animation pause
+anima_p	ld hl, anima_proc
+	ld a, (hl) : or a : jr nz, 1f
+	ld hl, anima_proc + 4
+1	ld a, (hl) : ld (anima + 1), a
+	
+	; set page
+	inc hl : ld a, (hl) : call setPage
+
+	inc hl : ld e, (hl)
+	inc hl : ld d, (hl)
+	inc hl : ld (anima_p + 1), hl
+	ex de, hl
+
+	; determine data flow start
+	push hl
+1	ld a, (hl) : inc hl : cp %11111111
+	jr nz, 1b
+	pop ix
+
+	; set start address
+	ld a, (hl) : ld e, a : inc hl
+	ld a, (hl) : ld d, a : inc hl
+_an_cycle	ld a, (ix + 0) : inc ix
+	bit 7, a : jr z, 1f
+	ld c, a
+	and #e0
+	cp #a0 : jr z, _anc_jmp100
+	ret 
+	; end of frame		
+1	bit 6, a : jr z, _anc_set
+_anc_jmp	; jump screen address
+	and #3f
+	inc a : ld c, a : ld b, 0
+	ex de, hl : add hl, bc : ex de, hl
+	jr _an_cycle
+_anc_jmp100	ld a, c
+	and #0f
+	or a : jr z, 1f
+	inc d : dec a : jr nz, $-2
+1	ld a, c : and %00010000 : jr z, _an_cycle
+	ld bc, #0080	; additional jump +128 bytes
+	ex de, hl : add hl, bc : ex de, hl
+	jr _an_cycle
+_anc_set	; copy N bytes from flow to screen
+	inc a
+	ldi : dec a : jr nz, $-3
+	jr _an_cycle
+anima_proc
+%ANIMATION_FRAMES% 
+	db #00
+	
+	]]></template>
+	<length>114</length>
+	<params>
+		<param>
+			<varname>ANIMATION_FRAMES</varname>
+			<type>string</type>
+			<default></default>
+		</param>
+	</params>
+</snippet>

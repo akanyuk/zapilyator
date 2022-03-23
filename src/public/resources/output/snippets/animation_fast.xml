@@ -1,0 +1,30 @@
+<snippet>
+	<name>Animation fast</name>
+	<description>Animation player with fast rendering</description>
+	<template><![CDATA[
+
+anima	ld a, #01 : dec a : ld (anima + 1), a : ret nz	; animation pause
+anima_p	ld hl, anima_proc
+	ld a, (hl) : or a : jr nz, 1f
+	ld hl, anima_proc + 4			; revert to start of animation
+1	ld a, (hl) : ld (anima + 1), a
+	inc hl : ld a, (hl) : call setPage
+	inc hl : ld e, (hl)
+	inc hl : ld d, (hl)
+	inc hl : ld (anima_p + 1), hl
+	ex de, hl
+	jp (hl)
+anima_proc
+%ANIMATION_FRAMES% 
+	db #00
+	
+	]]></template>
+	<length>37</length>
+	<params>
+		<param>
+			<varname>ANIMATION_FRAMES</varname>
+			<type>string</type>
+			<default></default>
+		</param>
+	</params>
+</snippet>
