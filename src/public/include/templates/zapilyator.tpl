@@ -385,15 +385,15 @@ $speeds = array(
             <div class="col-md-9">
                 <label class="radio-inline">
                     <input type="radio" checked name="scroll_font" value="1"/>
-                    <img src="<?php echo NFW::i()->base_path ?>resources/zapilyator/font1.png" alt=""/>
+                    <img src="<?php echo NFW::i()->base_path ?>resources/font1.png" alt=""/>
                 </label>
                 <label class="radio-inline">
                     <input type="radio" name="scroll_font" value="2"/>
-                    <img src="<?php echo NFW::i()->base_path ?>resources/zapilyator/font2.png" alt=""/>
+                    <img src="<?php echo NFW::i()->base_path ?>resources/font2.png" alt=""/>
                 </label>
                 <label class="radio-inline">
                     <input type="radio" name="scroll_font" value="3"/>
-                    <img src="<?php echo NFW::i()->base_path ?>resources/zapilyator/font3.png" alt=""/>
+                    <img src="<?php echo NFW::i()->base_path ?>resources/font3.png" alt=""/>
                 </label>
             </div>
         </div>

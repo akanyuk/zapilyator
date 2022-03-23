@@ -80,7 +80,7 @@ class zapilyator extends base_module {
 	}
 	
 	private function getSnippet($snippet_name, $options = array()) {
-		if (!$xml = simplexml_load_file(PROJECT_ROOT.'resources/zapilyator/snippets/'.$snippet_name.'.xml')) {
+		if (!$xml = simplexml_load_file(PROJECT_ROOT.'resources/output/snippets/'.$snippet_name.'.xml')) {
 			$this->error('Wrong XML file.', __FILE__, __LINE__);
 			return false;
 		}
@@ -324,15 +324,15 @@ class zapilyator extends base_module {
 		$dest_filename = md5(serialize($params));
 		$zip = new ZipArchive();
 		$zip->open($this->cache_dir.$dest_filename, ZIPARCHIVE::OVERWRITE | ZIPARCHIVE::CREATE);
-		$zip->addFile(PROJECT_ROOT.'resources/zapilyator/make.cmd', 'make.cmd');
-		$zip->addFile(PROJECT_ROOT.'resources/zapilyator/sources/builder.asm', 'sources/builder.asm');
+		$zip->addFile(PROJECT_ROOT.'resources/output/make.cmd', 'make.cmd');
+		$zip->addFile(PROJECT_ROOT.'resources/output/sources/builder.asm', 'sources/builder.asm');
 		
 		// -----------------
 		//  Generate source
 		// -----------------
 		
-		$fp = fopen(PROJECT_ROOT.'resources/zapilyator/sources/test.asm.tpl', 'r');
-		$source_tpl = fread($fp, filesize(PROJECT_ROOT.'resources/zapilyator/sources/test.asm.tpl'));
+		$fp = fopen(PROJECT_ROOT.'resources/output/sources/test.asm.tpl', 'r');
+		$source_tpl = fread($fp, filesize(PROJECT_ROOT.'resources/output/sources/test.asm.tpl'));
 		fclose($fp);
 		
 		$data_flow = $main_flow = $timeline = array();
@@ -346,7 +346,7 @@ class zapilyator extends base_module {
 			$source_tpl = str_replace('%if_music%', '', $source_tpl);
 			
 			$this->allocSpace($this->sizes['PT3 player'] + filesize($params['music_file']), 0);
-			$zip->addFile(PROJECT_ROOT.'resources/zapilyator/sources/PTxPlay.asm', 'sources/PTxPlay.asm');
+			$zip->addFile(PROJECT_ROOT.'resources/output/sources/PTxPlay.asm', 'sources/PTxPlay.asm');
 			$zip->addFile($params['music_file'], 'res/music');
 		}
 		else 
@@ -519,7 +519,7 @@ class zapilyator extends base_module {
 				'next_run' => 0xff
 			);
 			
-			$zip->addFile(PROJECT_ROOT.'resources/zapilyator/res/'.$params['scroll']['font'], 'res/16x16font');
+			$zip->addFile(PROJECT_ROOT.'resources/output/res/'.$params['scroll']['font'], 'res/16x16font');
 			$zip->addFromString('res/scroll', iconv("UTF-8", 'cp1251', mb_strtoupper($params['scroll']['text'], "UTF-8")));
 		}
 				
