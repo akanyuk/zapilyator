@@ -13,8 +13,7 @@ if (isset($_GET['get_file'])) {
 	header("Content-Length: ".filesize(PROJECT_ROOT.'var/cache/'.$filename));
 	readfile(PROJECT_ROOT.'var/cache/'.$filename);
 	exit;
-}
-elseif (empty($_POST)) {
+} elseif (empty($_POST)) {
 	// Main page
 	NFW::i()->assign('page', array(
 		'path' => 'zapilyator',
@@ -64,6 +63,7 @@ if (!isset($_POST['stage'])) {
 				break;
 			default:
 				NFW::i()->renderJSON(array('result' => 'error', 'last_msg' => 'Unknown animation type.'));
+				exit();
 		}
 		
 		$speed = intval($_POST['speed'.$i]);
@@ -87,37 +87,33 @@ if (!isset($_POST['stage'])) {
 		}
 	}
 
-	
 	// Splash screen
 	$splash_background = $Zapilyator->upload('splash_background');
 	if (!$Zapilyator->error) {
 		$data['splash']['background'] = $splash_background;
 		$data['splash']['delay'] = intval($_POST['splash_delay']) < 1 || intval($_POST['splash_delay']) > 5 ? 1 : intval($_POST['splash_delay']);
 	}
-	
-	
+
 	// Main background
 	$main_background = $Zapilyator->upload('main_background');
 	if (!$Zapilyator->error) {
 		$data['main']['background'] = $main_background;
 	}
-	
 
-	// Analyzator
-	$ach = isset($_POST['main_analyzator_chanel']) ? intval($_POST['main_analyzator_chanel']) : 0;
+	// Analyzer
+	$ach = isset($_POST['main_analyzer_channel']) ? intval($_POST['main_analyzer_channel']) : 0;
 	if ($ach >= 8 && $ach <= 11) {
-		$data['main']['analyzator']['chanel'] = $ach;
-		$data['main']['analyzator']['sens'] = intval($_POST['main_analyzator_sens']) < 8 || intval($_POST['main_analyzator_sens']) > 15 ? 15 : intval($_POST['main_analyzator_sens']);
+		$data['main']['analyzer']['channel'] = $ach;
+		$data['main']['analyzer']['sens'] = intval($_POST['main_analyzer_sens']) < 8 || intval($_POST['main_analyzer_sens']) > 15 ? 15 : intval($_POST['main_analyzer_sens']);
 	}
 	
-	// Analyzator in splash
-	$ach = isset($_POST['splash_analyzator_chanel']) ? intval($_POST['splash_analyzator_chanel']) : 0;
+	// Analyzer in splash
+	$ach = isset($_POST['splash_analyzer_channel']) ? intval($_POST['splash_analyzer_channel']) : 0;
 	if ($ach >= 8 && $ach <= 11) {
-		$data['splash']['analyzator']['chanel'] = $ach;
-		$data['splash']['analyzator']['sens'] = intval($_POST['splash_analyzator_sens']) < 8 || intval($_POST['splash_analyzator_sens']) > 15 ? 15 : intval($_POST['splash_analyzator_sens']);
+		$data['splash']['analyzer']['channel'] = $ach;
+		$data['splash']['analyzer']['sens'] = intval($_POST['splash_analyzer_sens']) < 8 || intval($_POST['splash_analyzer_sens']) > 15 ? 15 : intval($_POST['splash_analyzer_sens']);
 	}
-	
-	
+
 	// Scroll
 	if ($_POST['scroll_text']) {
 		$data['scroll']['text'] = $_POST['scroll_text'];
@@ -128,8 +124,7 @@ if (!isset($_POST['stage'])) {
 		$data['scroll']['color'] = $scroll_color < 0 || $scroll_color > 255 ? 0x47 : $scroll_color;
 	}
 	
-	// Upload pone!
-	
+	// Upload done!
 	$project_name = md5(NFW::i()->serializeArray($data));
 	$Zapilyator->saveProject($project_name, $data);
 
@@ -207,8 +202,8 @@ if ($_POST['stage'] == 'parse_animation') {
 		'download' => '?get_file='.$result_zip,
 		'log' => array(
 			'Generating demo...',
-			$Zapilyator->is_overflow ? '' : 'Freespace: <strong>'.number_format($Zapilyator->getFreeSpace() / 1024, 2, '.', '').'</strong> kb (<strong>'.number_format($Zapilyator->getFreeSpace(), 0, '.', ' ').'</strong> bytes)',
-			$Zapilyator->is_overflow ? '<div class="error">RAM limit exceeded!</div>' :  '<div class="success">Success!</div>'
+			$Zapilyator->is_overflow ? '' : 'Free space: <strong>'.number_format($Zapilyator->getFreeSpace() / 1024, 2, '.', '').'</strong> kb (<strong>'.number_format($Zapilyator->getFreeSpace(), 0, '.', ' ').'</strong> bytes)',
+			$Zapilyator->is_overflow ? '<div class="text-error">RAM limit exceeded!</div>' :  '<div class="text-success">Success!</div>'
 		)
 	));
 }

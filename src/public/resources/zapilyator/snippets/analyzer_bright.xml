@@ -1,8 +1,8 @@
 <snippet>
-	<name>Analyzator bright</name>
-	<description>AY-analyzator by bright attribute</description>
+	<name>Analyzer bright</name>
+	<description>AY-analyzer by bright attribute</description>
 	<template><![CDATA[
-	ld bc,#fffd : ld a, %CHANEL% : out (c),a : in a,(c)
+	ld bc,#fffd : ld a, %CHANNEL% : out (c),a : in a,(c)
 CUR_AY	ld e,#00
 	cp e : jr nc, $+4
 	ld a,e : dec a
@@ -35,7 +35,7 @@ DATA
 	<length>68</length>
 	<params>
 		<param>
-			<varname>CHANEL</varname>
+			<varname>CHANNEL</varname>
 			<type>byte</type>
 			<default>#0a</default>
 		</param>
@@ -47,7 +47,7 @@ DATA
 		<param>
 			<varname>DATA</varname>
 			<type>str</type>
-			<default></default>
+			<default/>
 		</param>
 	</params>
 </snippet>

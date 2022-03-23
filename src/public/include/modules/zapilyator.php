@@ -35,15 +35,14 @@ class zapilyator extends base_module {
 		$this->cache_dir = PROJECT_ROOT.$this->cache_dir;
 	}
 	
-	private function emptyFolder($dir, $timelive = 0) {
+	private function emptyFolder($dir, $liveTime = 0) {
 		if (substr($dir, -1, 1) != '/') $dir = $dir.'/';
 		// Remove old files
 		$files  = scandir($dir);
 		foreach ($files as $f) {
 			if (is_dir($dir.$f)) continue;
 	
-			//(fileperms($dir.$f) & 0x0080)
-			if ((time() - filemtime($dir.$f) > $timelive) && is_writable($dir.$f)) {
+			if ((time() - filemtime($dir.$f) > $liveTime) && is_writable($dir.$f)) {
 				@unlink($dir.$f);
 			}
 		}
@@ -92,9 +91,9 @@ class zapilyator extends base_module {
 		);
 	
 		foreach($xml->params->param as $param) {
-			$varname = (string)$param->varname;
-			$value = isset($options['params'][$varname]) ? $options['params'][$varname] : (string)$param->default;
-			$snippet['template'] = str_replace('%'.$varname.'%', $value, $snippet['template']);
+			$varName = (string)$param->varname;
+			$value = isset($options['params'][$varName]) ? $options['params'][$varName] : (string)$param->default;
+			$snippet['template'] = str_replace('%'.$varName.'%', $value, $snippet['template']);
 		}
 	
 		// Set module name
@@ -116,7 +115,7 @@ class zapilyator extends base_module {
 		return $snippet;
 	}
 		
-	private function generateAnalyzatorData($scr_filename) {
+	private function generateAnalyzerData($scr_filename) {
 		$scr = file_get_contents($scr_filename);
 		$result = array();
 		
@@ -129,7 +128,7 @@ class zapilyator extends base_module {
 	
 		if (empty($result)) return false;
 
-		// Save mdified (without FLASH) screen
+		// Save modified (without FLASH) screen
 		file_put_contents($scr_filename, $scr);
 		
 		return $result;  
@@ -293,7 +292,7 @@ class zapilyator extends base_module {
 					return false;
 				case '999':
 				default:
-					$this->error('No error code avaiable');
+					$this->error('No error code available');
 					return false;
 			}
 		}
@@ -393,16 +392,8 @@ class zapilyator extends base_module {
 		}
 
 		// Analyzer in splash screen
-		if (isset($params['splash']['analyzator']['chanel']) && isset($params['splash']['background']) && $data = $this->generateAnalyzatorData($params['splash']['background'])) {
-			$snippet = $this->getSnippet('analyzator_bright', array(
-				'module' => 'splash_analyzator',
-				'params' => array(
-					'CHANEL' => $params['splash']['analyzator']['chanel'],
-					'SENS' => $params['splash']['analyzator']['sens'],
-					'DATA' => implode("\n", $data)
-				)
-			));
-			$timeline[] = array(
+		if (isset($params['splash']['analyzer']['channel']) && isset($params['splash']['analyzer']) && $data = $this->generateAnalyzerData($params['splash']['background'])) {
+            $timeline[] = array(
 				'star_pattern' => 0,
 				'page' => 0,
 				'function' => $snippet['template'],
@@ -410,7 +401,15 @@ class zapilyator extends base_module {
 				'stop_pattern' => $params['splash']['delay'],
 				'next_run' => 0xff
 			);
-			$this->allocSpace($snippet['length'] + count($data) * 2, 0);
+            $snippet = $this->getSnippet('analyzer_bright', array(
+                'module' => 'splash_analyzer',
+                'params' => array(
+                    'CHANNEL' => $params['splash']['analyzer']['channel'],
+                    'SENS' => $params['splash']['analyzer']['sens'],
+                    'DATA' => implode("\n", $data)
+                )
+            ));
+            $this->allocSpace($snippet['length'] + count($data) * 2, 0);
 		}
 		
 		// Change border if different
@@ -445,25 +444,18 @@ class zapilyator extends base_module {
 		}
 		
 		// Analyzer in main screen
-		if (isset($params['main']['analyzator']['chanel']) && isset($params['main']['background']) && $data = $this->generateAnalyzatorData($params['main']['background'])) {
-			$snippet = $this->getSnippet('analyzator_bright', array(
-				'module' => 'main_analyzator',
+		if (isset($params['main']['analyzer']['channel']) && isset($params['main']['background']) && $data = $this->generateAnalyzerData($params['main']['background'])) {
+			$snippet = $this->getSnippet('analyzer_bright', array(
+				'module' => 'main_analyzer',
 				'params' => array(
-					'CHANEL' => $params['main']['analyzator']['chanel'],
-					'SENS' => $params['main']['analyzator']['sens'],
+					'CHANNEL' => $params['main']['analyzer']['channel'],
+					'SENS' => $params['main']['analyzer']['sens'],
 					'DATA' => implode("\n", $data)
 				)
 			));
 			
 			// Generate pause before start
-			$timeline[] = array(
-					'star_pattern' => $params['splash']['delay'],
-					'page' => 0,
-					'function' => "\t".'ret'."\n",
-					'ints_counter' => 0x0004,
-					'stop_pattern' => 0xff,
-					'next_run' => 'next'
-			);
+			$timeline[] = pauseBlock($params['splash']['delay']);
 			$this->allocSpace(1, 0);
 				
 			$timeline[] = array(
@@ -540,12 +532,14 @@ class zapilyator extends base_module {
 			$this->allocSpace($tmp_snippet['length'] + count($params[$i]['parsed']) * 4, 0);
 				
 			// Generate page-related array of frames,
-			// create diff's directory
+			// create `diff` directory
 			// and create DB array
 			$anima_frames = array();
 			foreach ($params[$i]['parsed'] as $key=>$frame) {
 				$page = $this->allocSpace($frame['frame_len']);
-				if ($page === false) $page = 8;	// Fake page for overflowed frames
+				if ($page === false) {
+				    $page = 8;	// Fake page for overflowed frames
+                }
 			
 				$proc_name = 'A'.$i.'_'.$page.'_'.sprintf("%04x", $key);
 				
@@ -554,8 +548,7 @@ class zapilyator extends base_module {
 				
 				$anima_frames[] = ($page == 8 ? ';' : '')."\tdb ".$frame['duration'].', '.$page.' : dw '.$proc_name;
 
-				
-				// Add diff's
+				// Adding `diff`
 				if (empty($frame['diff'])) continue;
 				$diff = '';
 				foreach ($frame['diff'] as $address=>$byte) {
@@ -581,14 +574,7 @@ class zapilyator extends base_module {
 			}
 			else {
 				// Generate pause before start
-				$timeline[] = array(
-					'star_pattern' => $params['splash']['delay'],
-					'page' => 0,
-					'function' => "\t".'ret'."\n",
-					'ints_counter' => 0x0004,
-					'stop_pattern' => 0xff,
-					'next_run' => 'next'
-				);
+                $timeline[] = pauseBlock($params['splash']['delay']);
 				$this->allocSpace(1, 0);
 				
 				// Generate timeline function
@@ -603,9 +589,7 @@ class zapilyator extends base_module {
 			}
 		}
 		
-		
 		// Almost done. Finalize.
-		
 		if (empty($timeline)) {
 			$source_tpl = str_replace('%timeline%', '', $source_tpl);
 			$source_tpl = str_replace('%functions%', '', $source_tpl);
@@ -627,4 +611,19 @@ class zapilyator extends base_module {
 		
 		return $dest_filename;
 	}
+}
+
+/**
+ * @param int $delay
+ * @return array
+ */
+function pauseBlock($delay = 0) {
+    return array(
+        'star_pattern' => $delay,
+        'page' => 0,
+        'function' => "\t".'ret'."\n",
+        'ints_counter' => 0x0004,
+        'stop_pattern' => 0xff,
+        'next_run' => 'next'
+    );
 }
