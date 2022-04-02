@@ -3,6 +3,10 @@
 /src/public/assets
 /src/public/var/cache
 
+# generation related
+/cache
+/output
+
 # win-server related
 win-server*
 logs
