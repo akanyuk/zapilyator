@@ -1,6 +1,5 @@
-	define SNA_FILENAME "test.sna"
-	define TRD_FILENAME "test.trd"
-	define BIN_FILENAME "test.bin"
+	define SNA_FILENAME "zapil.sna"
+	define TRD_FILENAME "zapil.trd"
 
 	device zxspectrum128
 

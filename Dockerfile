@@ -19,7 +19,8 @@ COPY --chown=root:root src/ /www
 WORKDIR /www
 ENTRYPOINT ["/start.sh"]
 EXPOSE 80
-HEALTHCHECK --interval=5s --timeout=5s CMD curl -f http://127.0.0.1/php-fpm-ping || exit 1
+
+# HEALTHCHECK --interval=5s --timeout=5s CMD curl -f http://127.0.0.1/php-fpm-ping || exit 1
 
 # RUN useradd php
 # RUN useradd nginx

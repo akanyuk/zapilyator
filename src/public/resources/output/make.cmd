@@ -1,5 +1,5 @@
 @echo off
-SET PROJECT=test
+SET PROJECT=zapil
 
 cd %~dp0
 del /q %PROJECT%.*

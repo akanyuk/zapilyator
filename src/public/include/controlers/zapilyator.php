@@ -14,7 +14,7 @@ if (isset($_GET['get_file'])) {
     }
 
     header('Content-type: application/force-download');
-    header('Content-Disposition: attachment; filename="test-demo.zip"');
+    header('Content-Disposition: attachment; filename="zapil.zip"');
     header("Content-Transfer-Encoding: binary");
     header("Content-Length: " . filesize(CACHE_DIR . $filename));
     readfile(CACHE_DIR . $filename);

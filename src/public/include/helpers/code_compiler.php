@@ -22,16 +22,16 @@ function CompileCode($outputDir, $projectName, $zipPath) {
     }
     $zip->extractTo($projectDir);
 
-    shell_exec('cd ' . $projectDir . ' && sjasmplus --inc=' . $projectDir . '/. --inc=' . $projectDir . '/sources/. ' . $projectDir . '/sources/test.asm');
+    shell_exec('cd ' . $projectDir . ' && sjasmplus --inc=' . $projectDir . '/. --inc=' . $projectDir . '/sources/. ' . $projectDir . '/sources/zapil.asm');
 
     $compileResult = false;
-    if (file_exists($projectDir . '/test.sna') || file_exists($projectDir . '/test.trd')) {
-        $zip->addFile($projectDir . '/test.sna', 'test.sna');
+    if (file_exists($projectDir . '/zapil.sna')) {
+        $zip->addFile($projectDir . '/zapil.sna', 'zapil.sna');
         $compileResult = true;
     }
 
-    if (file_exists($projectDir . '/test.trd')) {
-        $zip->addFile($projectDir . '/test.trd', 'test.trd');
+    if (file_exists($projectDir . '/zapil.trd')) {
+        $zip->addFile($projectDir . '/zapil.trd', 'zapil.trd');
         $compileResult = true;
     }
 

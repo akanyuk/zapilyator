@@ -340,8 +340,8 @@ class zapilyator extends base_module {
         //  Generate source
         // -----------------
 
-        $fp = fopen(PROJECT_ROOT . 'resources/output/sources/test.asm.tpl', 'r');
-        $source_tpl = fread($fp, filesize(PROJECT_ROOT . 'resources/output/sources/test.asm.tpl'));
+        $fp = fopen(PROJECT_ROOT . 'resources/output/sources/zapil.asm.tpl', 'r');
+        $source_tpl = fread($fp, filesize(PROJECT_ROOT . 'resources/output/sources/zapil.asm.tpl'));
         fclose($fp);
 
         $data_flow = $main_flow = $timeline = array();
@@ -610,7 +610,7 @@ class zapilyator extends base_module {
 
         $source_tpl = str_replace('%main_flow%', $this->generateMainFlow($main_flow), $source_tpl);
         $source_tpl = str_replace('%data_flow%', $this->generateDataFlow($data_flow), $source_tpl);
-        $zip->addFromString('sources/test.asm', $source_tpl);
+        $zip->addFromString('sources/zapil.asm', $source_tpl);
         $zip->close();
 
         return $dest_filename;
