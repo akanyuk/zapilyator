@@ -1,6 +1,6 @@
 <?php
 
-const CACHE_DIR = PROJECT_ROOT . '../../cache/';
+const CACHE_DIR = PROJECT_ROOT . 'var/cache/';
 
 if (!file_exists(CACHE_DIR)) {
     mkdir(CACHE_DIR, 0777, true);
@@ -137,7 +137,9 @@ if (!isset($_POST['stage'])) {
 
     // Upload done!
     $projectName = md5(NFW::i()->serializeArray($data));
-    $Zapilyator->saveProject($projectName, $data);
+    if (!$Zapilyator->saveProject($projectName, $data)) {
+        NFW::i()->renderJSON(array('result' => 'error', 'last_msg' => $Zapilyator->last_msg));
+    }
 
     NFW::i()->renderJSON(array(
         'result' => 'success',
@@ -171,7 +173,9 @@ if ($_POST['stage'] == 'parse_animation') {
             // Next animation
             $data['from'] = 0;
             $data[$i]['is_done'] = true;
-            $Zapilyator->saveProject($projectName, $data);
+            if (!$Zapilyator->saveProject($projectName, $data)) {
+                NFW::i()->renderJSON(array('result' => 'error', 'last_msg' => $Zapilyator->last_msg));
+            }
 
             $log = array(
                 'Parsed: <strong>' . $loading_result['from'] . ' - ' . $loading_result['to'] . '</strong> (' . $loading_result['total'] . ' total).',
@@ -193,7 +197,10 @@ if ($_POST['stage'] == 'parse_animation') {
             ));
         } else {
             $data['from'] = $loading_result['to'] + 1;
-            $Zapilyator->saveProject($projectName, $data);
+            if (!$Zapilyator->saveProject($projectName, $data)) {
+                NFW::i()->renderJSON(array('result' => 'error', 'last_msg' => $Zapilyator->last_msg));
+            }
+
             NFW::i()->renderJSON(array(
                 'result' => 'success',
                 'stage' => 'parse_animation',

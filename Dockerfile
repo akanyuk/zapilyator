@@ -2,33 +2,27 @@ FROM ubuntu:18.04 as sjasmplus-builder
 
 ENV SJASMPLUS_VERSION=1.18.3
 
+# sjasmplus building
 WORKDIR /app
 RUN apt-get update && apt-get install -y curl make g++
 RUN curl -L https://github.com/z00m128/sjasmplus/archive/refs/tags/v${SJASMPLUS_VERSION}.tar.gz | tar xvz --strip-components=1 -C .
 RUN make && make install
 
-
-RUN apt-get install -y \
-    nginx \
-    php-fpm \
-    tzdata \
-    php-mbstring php-iconv php-json php-zip php-simplexml php-gd
-RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm
-# RUN useradd php
-# RUN useradd nginx
-RUN rm -rf /etc/nginx/conf.d/* /etc/php7/conf.d/* /etc/php7/php-fpm.d/*
+# webserver starting
+RUN apt-get install -y nginx php-fpm tzdata php-mbstring php-iconv php-json php-zip php-simplexml php-gd \
+    && ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm \
+    && rm -rf /etc/nginx/conf.d/* /etc/php7/conf.d/* /etc/php7/php-fpm.d/*
 
 COPY docker-files /
+COPY --chown=root:root src/ /www
 
 WORKDIR /www
-
 ENTRYPOINT ["/start.sh"]
-
 EXPOSE 80
+HEALTHCHECK --interval=5s --timeout=5s CMD curl -f http://127.0.0.1/php-fpm-ping || exit 1
 
-# HEALTHCHECK --interval=5s --timeout=5s CMD curl -f http://127.0.0.1/php-fpm-ping || exit 1
-
-COPY --chown=root:root src/ /www
+# RUN useradd php
+# RUN useradd nginx
 
 # FROM existenz/webstack:7.4
 # COPY --from=sjasmplus-builder /usr/local/bin/sjasmplus /usr/bin/

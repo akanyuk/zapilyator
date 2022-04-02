@@ -25,7 +25,7 @@ class zapilyator extends base_module {
 
     var $isOverflow = false; // Size overflowing control
 
-    private $cacheDir = '../../cache/';
+    private $cacheDir = 'var/cache/';
 
     function __construct($config) {
         parent::__construct();
@@ -217,7 +217,7 @@ class zapilyator extends base_module {
 
     function loadProject($projectName) {
         if (!file_exists($this->cacheDir . $projectName)) {
-            $this->error('System error: wrong project temporary ID', __FILE__, __LINE__);
+            $this->error('System error: file "'.$projectName.'" not found in '.$this->cacheDir, __FILE__, __LINE__);
             return false;
         }
 
@@ -230,7 +230,12 @@ class zapilyator extends base_module {
     }
 
     function saveProject($projectName, $data) {
-        file_put_contents($this->cacheDir . $projectName, NFW::i()->serializeArray($data));
+        if (file_put_contents($this->cacheDir . $projectName, NFW::i()->serializeArray($data)) === false) {
+            $this->error('System error: save file "'.$projectName.'" into '.$this->cacheDir.' failed', __FILE__, __LINE__);
+            return false;
+        }
+
+        return true;
     }
 
     function parseAnimation($data, $i, $method = ZXAnimation::METHOD_FAST) {

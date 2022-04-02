@@ -1,10 +1,7 @@
 .idea
 
-# NFW related
 /src/public/assets
-
-# generation related
-/cache
+/src/public/var/cache
 
 # win-server related
 win-server*
