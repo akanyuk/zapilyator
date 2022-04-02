@@ -14,18 +14,8 @@ RUN apt-get install -y nginx php-fpm tzdata php-mbstring php-iconv php-json php-
     && rm -rf /etc/nginx/conf.d/* /etc/php7/conf.d/* /etc/php7/php-fpm.d/*
 
 COPY docker-files /
-COPY --chown=root:root src/ /www
+COPY --chown=www-data:www-data src/ /www
 
 WORKDIR /www
 ENTRYPOINT ["/start.sh"]
 EXPOSE 80
-
-# HEALTHCHECK --interval=5s --timeout=5s CMD curl -f http://127.0.0.1/php-fpm-ping || exit 1
-
-# RUN useradd php
-# RUN useradd nginx
-
-# FROM existenz/webstack:7.4
-# COPY --from=sjasmplus-builder /usr/local/bin/sjasmplus /usr/bin/
-# COPY --chown=php:nginx src/ /www
-# RUN apk -U --no-cache add php7-mbstring php7-iconv php7-json php-zip php7-simplexml php7-gd

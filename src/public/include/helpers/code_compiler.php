@@ -20,7 +20,9 @@ function CompileCode($outputDir, $projectName, $zipPath) {
     if ($zip->open($zipPath) !== true) {
         return false;
     }
-    $zip->extractTo($projectDir);
+    if (!$zip->extractTo($projectDir)) {
+        return false;
+    }
 
     shell_exec('cd ' . $projectDir . ' && sjasmplus --inc=' . $projectDir . '/. --inc=' . $projectDir . '/sources/. ' . $projectDir . '/sources/zapil.asm');
 
@@ -36,7 +38,7 @@ function CompileCode($outputDir, $projectName, $zipPath) {
     }
 
     $zip->close();
-    recurseRmdir($projectDir);
+//    recurseRmdir($projectDir);
 
     return $compileResult;
 }

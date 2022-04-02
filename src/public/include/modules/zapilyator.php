@@ -550,7 +550,7 @@ class zapilyator extends base_module {
                 $proc_name = 'A' . $i . '_' . $page . '_' . sprintf("%04x", $key);
 
                 $data_flow[$page][] = $proc_name . "\t" . 'include "res/' . $proc_name . '.asm"';
-                $zip->addFromString('res\\' . $proc_name . '.asm', $frame['source']);
+                $zip->addFromString('res/' . $proc_name . '.asm', $frame['source']);
 
                 $anima_frames[] = ($page == 8 ? ';' : '') . "\tdb " . $frame['duration'] . ', ' . $page . ' : dw ' . $proc_name;
 
@@ -560,7 +560,7 @@ class zapilyator extends base_module {
                 foreach ($frame['diff'] as $address => $byte) {
                     $diff .= sprintf("%04x", $address) . ' ' . sprintf("%02x", $byte) . "\n";
                 }
-                $zip->addFromString('diff\\' . $i . '-' . sprintf("%04d", $key) . '.txt', $diff);
+                $zip->addFromString('diff/' . $i . '-' . sprintf("%04d", $key) . '.txt', $diff);
             }
 
             // Generate animation function
