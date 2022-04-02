@@ -14,15 +14,19 @@ class ZXAnimation extends base_module {
 	private $procPrefix = 'x';
 	
 	function __construct($config = array()) {
+        parent::__construct();
+
 		$this->isDebug = isset($config['isDebug']) ? $config['isDebug'] : $this->isDebug;
 		$this->skipAttr = isset($config['skipAttr']) ? $config['skipAttr'] : $this->skipAttr;
 		$this->procPrefix = isset($config['procPrefix']) ? $config['procPrefix'] : $this->procPrefix;
 	}
 	
 	private function log($message) {
-		if (!$this->isDebug || !class_exists('FB')) return;
-		
-		FB::log($message);
+		if (!$this->isDebug || !class_exists('ChromePhp')) {
+		    return;
+        }
+
+        ChromePhp::log($message);
 	}
 	
 	// Генерация быстрого кода (1-я версия запилятора)

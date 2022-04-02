@@ -1,0 +1,9 @@
+.idea
+
+/src/public/assets
+/src/public/var/cache
+
+# win-server related
+win-server*
+logs
+temp
