@@ -26,18 +26,18 @@ class zapilyator extends base_module {
     var $isOverflow = false; // Size overflowing control
 
     private $cacheDir = '../../cache/';
-    private $outputDir = '../../output/';
 
-    function __construct() {
+    function __construct($config) {
         parent::__construct();
-        $this->cacheDir = PROJECT_ROOT . $this->cacheDir;
-        if (!file_exists($this->cacheDir)) {
-            mkdir($this->cacheDir, 0777, true);
-        }
 
-        $this->outputDir = PROJECT_ROOT . $this->outputDir;
-        if (!file_exists($this->outputDir)) {
-            mkdir($this->outputDir, 0777, true);
+        if (isset($config['cacheDir'])) {
+            $this->cacheDir = $config['cacheDir'];
+        } else {
+            $this->cacheDir = PROJECT_ROOT . $this->cacheDir;
+
+            if (!file_exists($this->cacheDir)) {
+                mkdir($this->cacheDir, 0777, true);
+            }
         }
     }
 
@@ -217,12 +217,12 @@ class zapilyator extends base_module {
 
     function loadProject($projectName) {
         if (!file_exists($this->cacheDir . $projectName)) {
-            $this->error('System error: wrong project temporary ID.', __FILE__, __LINE__);
+            $this->error('System error: wrong project temporary ID', __FILE__, __LINE__);
             return false;
         }
 
         if (!$data = NFW::i()->unserializeArray(file_get_contents($this->cacheDir . $projectName))) {
-            $this->error('System error: unable to reload project.', __FILE__, __LINE__);
+            $this->error('System error: unable to reload project', __FILE__, __LINE__);
             return false;
         }
 

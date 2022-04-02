@@ -1,8 +1,14 @@
 <?php
 
+const CACHE_DIR = PROJECT_ROOT . '../../cache/';
+
+if (!file_exists(CACHE_DIR)) {
+    mkdir(CACHE_DIR, 0777, true);
+}
+
 if (isset($_GET['get_file'])) {
     $filename = str_replace(array('\\', '/'), array('', ''), $_GET['get_file']);
-    if (!file_exists(PROJECT_ROOT . '../../cache/' . $filename) || is_dir(PROJECT_ROOT . 'var/cache/' . $filename)) {
+    if (!file_exists(CACHE_DIR . $filename) || is_dir(CACHE_DIR . $filename)) {
         NFW::i()->stop('File not found');
         return false;
     }
@@ -10,8 +16,8 @@ if (isset($_GET['get_file'])) {
     header('Content-type: application/force-download');
     header('Content-Disposition: attachment; filename="test-demo.zip"');
     header("Content-Transfer-Encoding: binary");
-    header("Content-Length: " . filesize(PROJECT_ROOT . 'var/cache/' . $filename));
-    readfile(PROJECT_ROOT . '../../cache/' . $filename);
+    header("Content-Length: " . filesize(CACHE_DIR . $filename));
+    readfile(CACHE_DIR . $filename);
     exit;
 } elseif (empty($_POST)) {
     // Main page
@@ -32,7 +38,9 @@ ini_set('max_execution_time', 300);
 require_once PROJECT_ROOT . 'include/helpers/parse256x192.php';
 require_once PROJECT_ROOT . 'include/helpers/ZXAnimation.php';
 
-$Zapilyator = new zapilyator();
+$Zapilyator = new zapilyator(array(
+    'cacheDir' => CACHE_DIR,
+));
 
 // First stage - load data
 if (!isset($_POST['stage'])) {
@@ -201,14 +209,28 @@ if ($_POST['stage'] == 'parse_animation') {
 
     $resultZip = $Zapilyator->generateSource($data);
 
+    require_once PROJECT_ROOT . 'include/helpers/code_compiler.php';
+
+    $compileLog = array(
+        'Compiling sources...',
+    );
+
+    $result = CompileCode(CACHE_DIR, $projectName.'-out', CACHE_DIR . $resultZip);
+    if ($result === false) {
+        $compileLog[] = '<div class="text-danger">Code compilation failed</div>';
+    } else {
+        $compileLog[] = '<div class="text-success">Code compilation success</div>';
+    }
+
     NFW::i()->renderJSON(array(
         'result' => 'done',
         'download' => '?get_file=' . $resultZip,
-        'log' => array(
+        'log' => array_merge(array(
             'Generating sources...',
             $Zapilyator->isOverflow ? '' : 'Free space: <strong>' . number_format($Zapilyator->getFreeSpace() / 1024, 2, '.', '') . '</strong> kb (<strong>' . number_format($Zapilyator->getFreeSpace(), 0, '.', ' ') . '</strong> bytes)',
-            $Zapilyator->isOverflow ? '<div class="text-error">RAM limit exceeded!</div>' : '<div class="text-success">Success!</div>'
-        )
+            $Zapilyator->isOverflow ? '<div class="text-danger">RAM limit exceeded!</div>' : '<div class="text-success">Success!</div>',
+            '---',
+        ), $compileLog),
     ));
 }
 
